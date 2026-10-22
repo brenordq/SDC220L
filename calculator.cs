@@ -1,29 +1,49 @@
+using System.Collections.Generic;
+
 namespace UserIntCalculator
 {
-    // The calculator class
-
+    // This class contains the calculator's math methods.
     class Calculator
     {
-        public int Add(int int1, int int2)
+        // Add two numbers.
+        public double Add(double a, double b)
         {
-            return int1 + int2;
+            return a + b;
         }
 
-        public double Subtract(double float1, double float2)
+        // Subtract the second number from the first.
+        public double Subtract(double a, double b)
         {
-            return float1 - float2;
+            return a - b;
         }
 
-        public double Multiply(double mult1, double mult2)
+        // Multiply two numbers.
+        public double Multiply(double a, double b)
         {
-            return mult1 * mult2;
+            return a * b;
         }
 
-        public double Divide(double div1, double div2)
+        // Divide the first number by the second.
+        public double Divide(double a, double b)
         {
-            // Division safety logic can be handled directly by whoever calls the method, 
-            // or return a raw division result.
-            return div1 / div2;
+            return a / b;
+        }
+
+        // Add all integers in the list.
+        public long Sum(List<int> numbers)
+        {
+            long total = 0;
+
+            foreach (int number in numbers)
+                total += number;
+
+            return total;
+        }
+
+        // Calculate the average of the stored integers.
+        public double Average(List<int> numbers)
+        {
+            return (double)Sum(numbers) / numbers.Count;
         }
     }
 }
