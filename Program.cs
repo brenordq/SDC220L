@@ -1,10 +1,11 @@
 /*********************************************************
 * Name: Breanna Gonzalez
-* Date: 10.22.26
-* Assignment: 3.2 Project Arrays and Lists
-* Description: create an application that will perform some
-* basic input, output, and array manipulation operations
+* Date: 11.01.26
+* Assignment: 4.2 Project Exception Handling
+* Description: update the application to throw exceptions with invalid inputs
+* on the division aspect of the calculator, contiue until user selects quit
 */
+
 using System;
 using System.Collections.Generic;
 
@@ -25,7 +26,7 @@ namespace UserIntCalculator
             int[] numbers = new int[10];
             int numberCount = 0;
 
-            Console.WriteLine("Project Week 2 | Arrays & Lists Update | Breanna Gonzalez");
+            Console.WriteLine("Project Week 3 | Arrays & Lists Update | Breanna Gonzalez");
             Console.WriteLine("Welcome to Bre's Calculator!");
             Console.WriteLine("Please make your selections based off of the menus.");
 
@@ -42,7 +43,7 @@ namespace UserIntCalculator
                 Console.WriteLine("5. Memory");
                 Console.WriteLine("6. Quit");
                 Console.Write("Choose an option: ");
-                choice = Console.ReadLine();
+                choice = Console.ReadLine() ?? "";
 
                 if (choice == "1")
                 {
@@ -62,16 +63,47 @@ namespace UserIntCalculator
                     double b = GetNumber("Enter second number: ");
                     Console.WriteLine("Result: " + calc.Multiply(a, b));
                 }
+                
                 else if (choice == "4")
                 {
-                    double a = GetNumber("Enter first number: ");
-                    double b = GetNumber("Enter second number: ");
+                    bool tryAgain = true;
 
-                    // Check for division by zero.
-                    if (b == 0)
-                        Console.WriteLine("Cannot divide by zero.");
-                    else
-                        Console.WriteLine("Result: " + calc.Divide(a, b));
+                    while (tryAgain)
+                    {
+                        try
+                        {
+                            Console.Write("Enter first number: ");
+                            double a = double.Parse(Console.ReadLine() ?? "");
+
+                            Console.Write("Enter second number: ");
+                            double b = double.Parse(Console.ReadLine() ?? "");
+
+                            double result = calc.Divide(a, b);
+
+                            Console.WriteLine("Result: " + result);
+                            tryAgain = false;
+                        }
+                        catch (DivideByZeroException ex)
+                        {
+                            Console.WriteLine("Exception Information: " + ex);
+                            Console.WriteLine("Error: Cannot divide by zero.");
+                        }
+                        catch (FormatException ex)
+                        {
+                            Console.WriteLine("Exception Information: " + ex);
+                            Console.WriteLine("Error: Please enter valid numbers.");
+                        }
+
+                        if (tryAgain)
+                        {
+                            Console.Write("Would you like to try again? (Y/N): ");
+
+                            string answer = Console.ReadLine() ?? "";
+
+                            if (answer.ToUpper() != "Y")
+                                tryAgain = false;
+                        }
+                    }
                 }
                 else if (choice == "5")
                 {
@@ -88,7 +120,7 @@ namespace UserIntCalculator
                         Console.WriteLine("5. Integer collection");
                         Console.WriteLine("6. Return to main menu");
                         Console.Write("Choose an option: ");
-                        memoryChoice = Console.ReadLine();
+                        memoryChoice = Console.ReadLine() ?? "";
 
                         if (memoryChoice == "1")
                         {
@@ -137,7 +169,7 @@ namespace UserIntCalculator
                                 Console.WriteLine("7. First minus last");
                                 Console.WriteLine("8. Return to memory menu");
                                 Console.Write("Choose an option: ");
-                                listChoice = Console.ReadLine();
+                                listChoice = Console.ReadLine() ?? "";
 
                                 if (listChoice == "1")
                                 {
