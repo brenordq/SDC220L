@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 
 namespace UserIntCalculator
@@ -26,6 +27,9 @@ namespace UserIntCalculator
         // Divide the first number by the second.
         public double Divide(double a, double b)
         {
+            if (b == 0)
+                throw new DivideByZeroException("Cannot divide by zero.");
+
             return a / b;
         }
 
