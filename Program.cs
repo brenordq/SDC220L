@@ -1,10 +1,10 @@
+
 /*********************************************************
 * Name: Breanna Gonzalez
-* Date: 11.01.26
-* Assignment: 4.2 Project Exception Handling
-* Description: update the application to throw exceptions with invalid inputs
-* on the division aspect of the calculator, contiue until user selects quit
-*/
+* Date: 11.04.26
+* Assignment: 5.2 Project Exception Handling
+* Description: Finalization of the overall project
+*********************************************************/
 
 using System;
 using System.Collections.Generic;
@@ -15,24 +15,19 @@ namespace UserIntCalculator
     {
         static void Main(string[] args)
         {
-            // Create the calculator object.
+            // Create calculator object
             Calculator calc = new Calculator();
 
-            // Store one numeric value in memory.
-            double memory = 0;
-            bool hasMemory = false;
+            // Create a list to store up to 10 numbers
+            List<double> memory = new List<double>();
 
-            // ARRAY: Reserve space for up to 10 integers.
-            int[] numbers = new int[10];
-            int numberCount = 0;
-
-            Console.WriteLine("Project Week 3 | Arrays & Lists Update | Breanna Gonzalez");
+            Console.WriteLine("Project Week 5 | Final Update | Breanna Gonzalez");
             Console.WriteLine("Welcome to Bre's Calculator!");
             Console.WriteLine("Please make your selections based off of the menus.");
 
             string choice = "";
 
-            // Repeat the main menu until the user quits.
+            // Repeat the main menu until user quits
             while (choice != "6")
             {
                 Console.WriteLine("\n Calculator Menu ");
@@ -47,23 +42,19 @@ namespace UserIntCalculator
 
                 if (choice == "1")
                 {
-                    double a = GetNumber("Enter first number: ");
-                    double b = GetNumber("Enter second number: ");
-                    Console.WriteLine("Result: " + calc.Add(a, b));
+                    List<double> numbers = GetNumbers();
+                    Console.WriteLine("Result: {0:F2}", calc.Add(numbers));
                 }
                 else if (choice == "2")
                 {
-                    double a = GetNumber("Enter first number: ");
-                    double b = GetNumber("Enter second number: ");
-                    Console.WriteLine("Result: " + calc.Subtract(a, b));
+                    List<double> numbers = GetNumbers();
+                    Console.WriteLine("Result: {0:F2}", calc.Subtract(numbers));
                 }
                 else if (choice == "3")
                 {
-                    double a = GetNumber("Enter first number: ");
-                    double b = GetNumber("Enter second number: ");
-                    Console.WriteLine("Result: " + calc.Multiply(a, b));
+                    List<double> numbers = GetNumbers();
+                    Console.WriteLine("Result: {0:F2}", calc.Multiply(numbers));
                 }
-                
                 else if (choice == "4")
                 {
                     bool tryAgain = true;
@@ -72,26 +63,21 @@ namespace UserIntCalculator
                     {
                         try
                         {
-                            Console.Write("Enter first number: ");
-                            double a = double.Parse(Console.ReadLine() ?? "");
+                            List<double> numbers = GetNumbers();
 
-                            Console.Write("Enter second number: ");
-                            double b = double.Parse(Console.ReadLine() ?? "");
+                            double result = calc.Divide(numbers);
 
-                            double result = calc.Divide(a, b);
-
-                            Console.WriteLine("Result: " + result);
+                            Console.WriteLine("Result: {0:F2}", result);
                             tryAgain = false;
                         }
                         catch (DivideByZeroException ex)
                         {
-                            Console.WriteLine("Exception Information: " + ex);
+                            Console.WriteLine("Exception Information: " + ex.Message);
                             Console.WriteLine("Error: Cannot divide by zero.");
                         }
-                        catch (FormatException ex)
+                        catch (ArgumentException ex)
                         {
-                            Console.WriteLine("Exception Information: " + ex);
-                            Console.WriteLine("Error: Please enter valid numbers.");
+                            Console.WriteLine("Error: " + ex.Message);
                         }
 
                         if (tryAgain)
@@ -109,7 +95,7 @@ namespace UserIntCalculator
                 {
                     string memoryChoice = "";
 
-                    // Display the memory menu until the user returns.
+                    // Display the memory menu until user returns
                     while (memoryChoice != "6")
                     {
                         Console.WriteLine("\n Memory Menu ");
@@ -117,157 +103,80 @@ namespace UserIntCalculator
                         Console.WriteLine("2. Retrieve number");
                         Console.WriteLine("3. Replace number");
                         Console.WriteLine("4. Clear number");
-                        Console.WriteLine("5. Integer collection");
+                        Console.WriteLine("5. Display all numbers");
                         Console.WriteLine("6. Return to main menu");
                         Console.Write("Choose an option: ");
                         memoryChoice = Console.ReadLine() ?? "";
 
                         if (memoryChoice == "1")
                         {
-                            if (hasMemory)
-                                Console.WriteLine("Memory already has a value. Use Replace.");
+                            if (memory.Count >= 10)
+                                Console.WriteLine("Memory is full. Maximum is 10.");
                             else
                             {
-                                memory = GetNumber("Enter number to store: ");
-                                hasMemory = true;
+                                double number = GetNumber("Enter number to store: ");
+                                memory.Add(number);
                                 Console.WriteLine("Number stored.");
                             }
                         }
                         else if (memoryChoice == "2")
                         {
-                            if (hasMemory)
-                                Console.WriteLine("Stored number: " + memory);
-                            else
+                            if (memory.Count == 0)
                                 Console.WriteLine("Memory is empty.");
+                            else
+                            {
+                                int position = GetInteger("Enter memory position: ");
+
+                                if (position >= 1 && position <= memory.Count)
+                                    Console.WriteLine("Stored number: {0:F2}",
+                                        memory[position - 1]);
+                                else
+                                    Console.WriteLine("Invalid position.");
+                            }
                         }
                         else if (memoryChoice == "3")
                         {
-                            memory = GetNumber("Enter new number: ");
-                            hasMemory = true;
-                            Console.WriteLine("Number replaced.");
+                            if (memory.Count == 0)
+                                Console.WriteLine("Memory is empty.");
+                            else
+                            {
+                                DisplayMemory(memory);
+
+                                int position = GetInteger("Enter number position to replace: ");
+
+                                if (position >= 1 && position <= memory.Count)
+                                {
+                                    memory[position - 1] =
+                                        GetNumber("Enter new number: ");
+
+                                    Console.WriteLine("Number replaced.");
+                                }
+                                else
+                                    Console.WriteLine("Invalid position.");
+                            }
                         }
                         else if (memoryChoice == "4")
                         {
-                            memory = 0;
-                            hasMemory = false;
-                            Console.WriteLine("Memory cleared.");
+                            if (memory.Count == 0)
+                                Console.WriteLine("Memory is empty.");
+                            else
+                            {
+                                DisplayMemory(memory);
+
+                                int position = GetInteger("Enter number position to clear: ");
+
+                                if (position >= 1 && position <= memory.Count)
+                                {
+                                    memory.RemoveAt(position - 1);
+                                    Console.WriteLine("Number cleared.");
+                                }
+                                else
+                                    Console.WriteLine("Invalid position.");
+                            }
                         }
                         else if (memoryChoice == "5")
                         {
-                            string listChoice = "";
-
-                            // Display the integer collection menu.
-                            while (listChoice != "8")
-                            {
-                                Console.WriteLine("\n Integer Collection ");
-                                Console.WriteLine("1. Display numbers");
-                                Console.WriteLine("2. Count numbers");
-                                Console.WriteLine("3. Remove a number");
-                                Console.WriteLine("4. Add numbers");
-                                Console.WriteLine("5. Sum");
-                                Console.WriteLine("6. Average");
-                                Console.WriteLine("7. First minus last");
-                                Console.WriteLine("8. Return to memory menu");
-                                Console.Write("Choose an option: ");
-                                listChoice = Console.ReadLine() ?? "";
-
-                                if (listChoice == "1")
-                                {
-                                    // Display the values stored in the array.
-                                    if (numberCount == 0)
-                                        Console.WriteLine("No numbers stored.");
-                                    else
-                                    {
-                                        for (int i = 0; i < numberCount; i++)
-                                            Console.WriteLine((i + 1) + ". " + numbers[i]);
-                                    }
-                                }
-                                else if (listChoice == "2")
-                                {
-                                    // Display how many integers are stored.
-                                    Console.WriteLine("Count: " + numberCount);
-                                }
-                                else if (listChoice == "3")
-                                {
-                                    // Remove a value by its position.
-                                    if (numberCount == 0)
-                                        Console.WriteLine("No numbers to remove.");
-                                    else
-                                    {
-                                        for (int i = 0; i < numberCount; i++)
-                                            Console.WriteLine((i + 1) + ". " + numbers[i]);
-
-                                        int position = GetInteger("Enter position to remove: ");
-
-                                        if (position >= 1 && position <= numberCount)
-                                        {
-                                            // Shift remaining values to fill the empty position.
-                                            for (int i = position - 1; i < numberCount - 1; i++)
-                                                numbers[i] = numbers[i + 1];
-
-                                            numberCount--;
-                                            Console.WriteLine("Number removed.");
-                                        }
-                                        else
-                                            Console.WriteLine("Invalid position.");
-                                    }
-                                }
-                                else if (listChoice == "4")
-                                {
-                                    // Add integers if the array has available space.
-                                    int available = 10 - numberCount;
-
-                                    if (available == 0)
-                                        Console.WriteLine("Memory is full.");
-                                    else
-                                    {
-                                        int amount = GetInteger("How many numbers do you want to add? ");
-
-                                        if (amount < 1 || amount > available)
-                                            Console.WriteLine("Invalid amount. Available spaces: " + available);
-                                        else
-                                        {
-                                            for (int i = 0; i < amount; i++)
-                                            {
-                                                numbers[numberCount] = GetInteger("Enter an integer: ");
-                                                numberCount++;
-                                            }
-
-                                            Console.WriteLine("Numbers added.");
-                                        }
-                                    }
-                                }
-                                else if (listChoice == "5")
-                                {
-                                    // Convert stored array values to a List for the sum method.
-                                    List<int> storedNumbers = GetStoredNumbers(numbers, numberCount);
-                                    Console.WriteLine("Sum: " + calc.Sum(storedNumbers));
-                                }
-                                else if (listChoice == "6")
-                                {
-                                    // Calculate the average only when values exist.
-                                    if (numberCount == 0)
-                                        Console.WriteLine("No numbers to average.");
-                                    else
-                                    {
-                                        List<int> storedNumbers = GetStoredNumbers(numbers, numberCount);
-                                        Console.WriteLine("Average: " + calc.Average(storedNumbers));
-                                    }
-                                }
-                                else if (listChoice == "7")
-                                {
-                                    // Subtract the last stored value from the first.
-                                    if (numberCount < 2)
-                                        Console.WriteLine("Enter at least two numbers first.");
-                                    else
-                                        Console.WriteLine("Difference: " +
-                                            ((long)numbers[0] - numbers[numberCount - 1]));
-                                }
-                                else if (listChoice != "8")
-                                {
-                                    Console.WriteLine("Invalid choice.");
-                                }
-                            }
+                            DisplayMemory(memory);
                         }
                         else if (memoryChoice != "6")
                         {
@@ -277,28 +186,68 @@ namespace UserIntCalculator
                 }
                 else if (choice != "6")
                 {
-                    Console.WriteLine("Invalid choice. Please try again.");
+                    Console.WriteLine("Invalid. Please try again.");
                 }
             }
 
-            // Display the closing message when the user quits.
+            // Display closing message when user quits
             Console.WriteLine("\nThank you for using Bre's Calculator!");
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
         }
 
-        // Copy the active array values into a List for calculations.
-        static List<int> GetStoredNumbers(int[] numbers, int count)
+        // Get multiple numbers entered by user
+        static List<double> GetNumbers()
         {
-            List<int> storedNumbers = new List<int>();
+            List<double> numbers = new List<double>();
 
-            for (int i = 0; i < count; i++)
-                storedNumbers.Add(numbers[i]);
+            while (true)
+            {
+                Console.WriteLine("Enter at least two numbers separated by spaces:");
+                string input = Console.ReadLine() ?? "";
 
-            return storedNumbers;
+                string[] values = input.Split(
+                    new char[] { ' ', '\t' },
+                    StringSplitOptions.RemoveEmptyEntries);
+
+                bool valid = values.Length >= 2;
+
+                foreach (string value in values)
+                {
+                    double number;
+
+                    if (double.TryParse(value, out number) &&
+                        !double.IsNaN(number) &&
+                        !double.IsInfinity(number))
+                    {
+                        numbers.Add(number);
+                    }
+                    else
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (valid)
+                    return numbers;
+
+                Console.WriteLine("Please enter at least two valid numbers.");
+                numbers.Clear();
+            }
         }
 
-        // Read a valid numeric value from the user.
+        // Display all numbers stored in memory
+        static void DisplayMemory(List<double> memory)
+        {
+            if (memory.Count == 0)
+                Console.WriteLine("No numbers were stored.");
+            else
+            {
+                for (int i = 0; i < memory.Count; i++)
+                    Console.WriteLine((i + 1) + ". " + memory[i].ToString("F2"));
+            }
+        }
+
+        // Read a valid number value from user
         static double GetNumber(string message)
         {
             double number;
@@ -315,7 +264,7 @@ namespace UserIntCalculator
             }
         }
 
-        // Read a valid whole number from the user.
+        // Read a valid whole number from user
         static int GetInteger(string message)
         {
             int number;
