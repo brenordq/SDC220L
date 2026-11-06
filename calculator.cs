@@ -1,53 +1,73 @@
-
+using System;
 using System.Collections.Generic;
 
 namespace UserIntCalculator
 {
-    // This class contains the calculator's math methods.
     class Calculator
     {
-        // Add two numbers.
-        public double Add(double a, double b)
+        // Check that at least two numbers were entered
+        private void CheckNumbers(List<double> numbers)
         {
-            return a + b;
+            if (numbers == null || numbers.Count < 2)
+                throw new ArgumentException("At least two numbers are required.");
         }
 
-        // Subtract the second number from the first.
-        public double Subtract(double a, double b)
+        // Add all numbers in list
+        public double Add(List<double> numbers)
         {
-            return a - b;
-        }
+            CheckNumbers(numbers);
 
-        // Multiply two numbers.
-        public double Multiply(double a, double b)
-        {
-            return a * b;
-        }
+            double total = 0;
 
-        // Divide the first number by the second.
-        public double Divide(double a, double b)
-        {
-            if (b == 0)
-                throw new DivideByZeroException("Cannot divide by zero.");
-
-            return a / b;
-        }
-
-        // Add all integers in the list.
-        public long Sum(List<int> numbers)
-        {
-            long total = 0;
-
-            foreach (int number in numbers)
+            foreach (double number in numbers)
                 total += number;
 
             return total;
         }
 
-        // Calculate the average of the stored integers.
-        public double Average(List<int> numbers)
+        // Subtract each number from first number
+        public double Subtract(List<double> numbers)
         {
-            return (double)Sum(numbers) / numbers.Count;
+            CheckNumbers(numbers);
+
+            double total = numbers[0];
+
+            for (int i = 1; i < numbers.Count; i++)
+                total -= numbers[i];
+
+            return total;
+        }
+
+        // Multiply all numbers in list
+        public double Multiply(List<double> numbers)
+        {
+            CheckNumbers(numbers);
+
+            double total = 1;
+
+            foreach (double number in numbers)
+                total *= number;
+
+            return total;
+        }
+
+        // Divide first number by each remaining number
+        public double Divide(List<double> numbers)
+        {
+            CheckNumbers(numbers);
+
+            double total = numbers[0];
+
+            for (int i = 1; i < numbers.Count; i++)
+            {
+                if (numbers[i] == 0)
+                    throw new DivideByZeroException(
+                        "Cannot divide by zero.");
+
+                total /= numbers[i];
+            }
+
+            return total;
         }
     }
 }
